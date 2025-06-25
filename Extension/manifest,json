@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Custom Input Anywhere",
+  "version": "1.0",
+  "description": "A floating input box that syncs with webpage inputs. Includes AI-powered advanced mode.",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Custom Input Box"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "commands": {
+    "toggle-input-box": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+I"
+      },
+      "description": "Toggle floating input box"
+    }
+  ]
+}
