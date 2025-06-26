@@ -10,7 +10,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Watch for focus on input or textarea — ignore floating box itself
+// Focus tracking for all inputs and textareas (except the floating box)
 document.addEventListener("focusin", (e) => {
   const tag = e.target.tagName.toLowerCase();
 
@@ -23,13 +23,13 @@ document.addEventListener("focusin", (e) => {
     container.style.display = "block";
     inputBox.focus();
 
-    // Rebind sync from real input → floating box
+    // Sync from real input → floating box
     currentInput.removeEventListener("input", syncToFloating);
     currentInput.addEventListener("input", syncToFloating);
   }
 });
 
-// Create the floating input box
+// Create the floating input box container
 function createFloatingBox() {
   container = document.createElement("div");
   container.id = "floating-input-container";
@@ -47,21 +47,28 @@ function createFloatingBox() {
     color: "#000",
     minWidth: "300px",
     fontFamily: "Arial",
-    display: "block"
+    display: "block",
+    cursor: "move"
   });
 
-  // ❌ Close Button
+  // Draggable header
+  const header = document.createElement("div");
+  header.style.cursor = "move";
+  header.style.display = "flex";
+  header.style.justifyContent = "space-between";
+  header.style.alignItems = "center";
+
+  // ❌ Close button
   const closeBtn = document.createElement("span");
   closeBtn.textContent = "❌";
   Object.assign(closeBtn.style, {
-    float: "right",
     cursor: "pointer",
     fontSize: "18px",
-    marginBottom: "8px",
-    marginLeft: "10px"
   });
   closeBtn.onclick = () => (container.style.display = "none");
-  container.appendChild(closeBtn);
+
+  header.appendChild(closeBtn);
+  container.appendChild(header);
 
   // ✅ Floating textarea
   inputBox = document.createElement("textarea");
@@ -70,7 +77,6 @@ function createFloatingBox() {
   inputBox.style.width = "100%";
   inputBox.style.resize = "vertical";
 
-  // Floating box → real input/textarea
   inputBox.addEventListener("input", () => {
     if (currentInput) {
       currentInput.value = inputBox.value;
@@ -81,9 +87,11 @@ function createFloatingBox() {
 
   container.appendChild(inputBox);
   document.body.appendChild(container);
+
+  makeDraggable(container, header); // enable dragging
 }
 
-// Real input → floating box
+// Sync real input → floating box
 function syncToFloating() {
   if (inputBox && currentInput) {
     inputBox.value = currentInput.value;
@@ -104,4 +112,28 @@ function toggleFloatingBox() {
     container.style.display = "none";
   }
 }
+
+// Make the container draggable by the header
+function makeDraggable(element, handle) {
+  let offsetX = 0, offsetY = 0, isDown = false;
+
+  handle.addEventListener("mousedown", (e) => {
+    isDown = true;
+    offsetX = e.clientX - element.offsetLeft;
+    offsetY = e.clientY - element.offsetTop;
+    element.style.transition = "none";
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDown = false;
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    element.style.left = e.clientX - offsetX + "px";
+    element.style.top = e.clientY - offsetY + "px";
+    element.style.transform = "none";
+  });
+}
+
 
