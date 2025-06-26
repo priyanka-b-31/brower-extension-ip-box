@@ -1,8 +1,8 @@
-// --- Setup ---
 let currentInput = null;
 let container = null;
+let inputBox = null;
 
-// --- Toggle Shortcut (Ctrl+Shift+I) ---
+// Shortcut to toggle (Ctrl + Shift + I)
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
     if (!container) createFloatingBox();
@@ -10,22 +10,30 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// --- Detect focus on any input or textarea ---
+// Watch for focus on input or textarea — ignore floating box itself
 document.addEventListener("focusin", (e) => {
-  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
+  const tag = e.target.tagName.toLowerCase();
+
+  if ((tag === "input" || tag === "textarea") && e.target.id !== "floating-box-input") {
     currentInput = e.target;
+
     if (!container) createFloatingBox();
-    const floatingInput = document.getElementById("floating-box-input");
-    floatingInput.value = currentInput.value;
+
+    inputBox.value = currentInput.value;
     container.style.display = "block";
-    floatingInput.focus();
+    inputBox.focus();
+
+    // Rebind sync from real input → floating box
+    currentInput.removeEventListener("input", syncToFloating);
+    currentInput.addEventListener("input", syncToFloating);
   }
 });
 
-// --- Function to create box ---
+// Create the floating input box
 function createFloatingBox() {
   container = document.createElement("div");
   container.id = "floating-input-container";
+
   Object.assign(container.style, {
     position: "fixed",
     top: "10%",
@@ -35,71 +43,65 @@ function createFloatingBox() {
     padding: "16px",
     borderRadius: "12px",
     boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+    background: "#fff",
+    color: "#000",
+    minWidth: "300px",
     fontFamily: "Arial",
-    display: "block",
-    minWidth: "300px"
+    display: "block"
   });
 
-  // Dark mode support
-  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  container.style.background = isDark ? "#1e1e1e" : "#ffffff";
-  container.style.color = isDark ? "#f1f1f1" : "#000000";
-
-  // Close Button
+  // ❌ Close Button
   const closeBtn = document.createElement("span");
-  closeBtn.innerText = "❌";
+  closeBtn.textContent = "❌";
   Object.assign(closeBtn.style, {
     float: "right",
     cursor: "pointer",
     fontSize: "18px",
-    marginBottom: "8px"
+    marginBottom: "8px",
+    marginLeft: "10px"
   });
-  closeBtn.onmouseover = () => (closeBtn.style.color = "red");
-  closeBtn.onmouseout = () => (closeBtn.style.color = isDark ? "#f1f1f1" : "#000");
   closeBtn.onclick = () => (container.style.display = "none");
   container.appendChild(closeBtn);
 
-  // Input Box
-  const input = document.createElement("input");
-  input.id = "floating-box-input";
-  Object.assign(input.style, {
-     width: "100%",
-    fontSize: "16px",
-    padding: "10px",
-    borderRadius: "8px",
-    border: "1px solid #888",
-    background: isDark ? "#2e2e2e" : "#fff",
-    color: isDark ? "#fff" : "#000",
-    outline: "none"
-  });
+  // ✅ Floating textarea
+  inputBox = document.createElement("textarea");
+  inputBox.id = "floating-box-input";
+  inputBox.rows = 4;
+  inputBox.style.width = "100%";
+  inputBox.style.resize = "vertical";
 
-  // Sync typing from floating box to actual input
-  input.addEventListener("input", () => {
+  // Floating box → real input/textarea
+  inputBox.addEventListener("input", () => {
     if (currentInput) {
-      currentInput.value = input.value;
+      currentInput.value = inputBox.value;
+      currentInput.dispatchEvent(new Event("input", { bubbles: true }));
+      currentInput.dispatchEvent(new Event("change", { bubbles: true }));
     }
   });
 
-  // Hide on ESC
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      container.style.display = "none";
-    }
-  });
-
-  container.appendChild(input);
+  container.appendChild(inputBox);
   document.body.appendChild(container);
 }
 
-// --- Show/hide toggle ---
-function toggleFloatingBox() {
-  if (!container) return;
-  const isVisible = container.style.display !== "none";
-  container.style.display = isVisible ? "none" : "block";
-
-  const input = document.getElementById("floating-box-input");
-  if (currentInput && input) {
-    input.value = currentInput.value;
-    input.focus();
+// Real input → floating box
+function syncToFloating() {
+  if (inputBox && currentInput) {
+    inputBox.value = currentInput.value;
   }
 }
+
+// Toggle visibility
+function toggleFloatingBox() {
+  if (!container) return;
+
+  if (container.style.display === "none") {
+    container.style.display = "block";
+    if (currentInput) {
+      inputBox.value = currentInput.value;
+      inputBox.focus();
+    }
+  } else {
+    container.style.display = "none";
+  }
+}
+
