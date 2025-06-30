@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2>Focus Input Extension</h2>
+  <div id="status" class="status disabled">Extension Disabled</div>
+  <label>
+    Enable Extension
+    <input type="checkbox" id="extensionToggle">
+  </label>
+
+  <div>
+    <h3>Mode</h3>
+    <label><input type="radio" name="mode" id="habitMode" value="habit" checked> Habit Mode</label>
+    <label><input type="radio" name="mode" id="advancedMode" value="advanced"> Advanced Mode</label>
+  </div>
+
+  <div>
+    <h3>Input Position</h3>
+    <select id="inputPosition">
+      <option value="top">Top Header</option>
+      <option value="center">Center Popup</option>
+      <option value="custom">Custom</option>
+    </select>
+  </div>
+
+  <div class="shortcuts">
+    <b>Shortcuts:</b><br>
+    Ctrl+Shift+F: Toggle Extension<br>
+    Ctrl+Shift+X: Switch Mode
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+
+
+
