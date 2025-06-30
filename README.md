@@ -22,7 +22,7 @@ A browser extension that allows users to type into a floating input box that is 
 
 - Easily toggle between modes (`habit` / `advanced`)
 - Customize input placement (`top` / `center`)
-- Enable/disable the extension via shortcut or popup
+- Enable/disable the extension via shortcut 
 
 ---
 

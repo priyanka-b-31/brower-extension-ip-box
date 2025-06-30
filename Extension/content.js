@@ -4,7 +4,7 @@ class FocusInputExtension {
         this.currentMode = 'habit';
         this.inputPosition = 'top';
         this.originalInput = null;
-        this.apiKey = ''; // <-- your actual key here
+        this.apiKey = ''; //put the api key here, when i added my key and tried to commit git was throwing few security issues, so i have left this
         this.placeholderDiv = null;
         this.aiSuggestionBox = null;
         this.suggestionDebounceTimer = null;
