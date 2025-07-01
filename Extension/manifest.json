@@ -17,22 +17,32 @@
   },
 
   "browser_action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
   },
 
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
-      "css": ["style.css"]
+      "css": ["styles.css"]
     }
   ],
 
   "web_accessible_resources": [
-    "style.css"
+    "styles.css",
+    "icons/*"
   ],
-
-  "commands": {
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+   "commands": {
     "toggle-extension": {
       "suggested_key": {
         "default": "Ctrl+Shift+F"
@@ -46,5 +56,5 @@
       "description": "Toggle between Habit and Advanced mode"
     }
   }
-}
 
+}
