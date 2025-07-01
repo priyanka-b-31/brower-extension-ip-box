@@ -1,6 +1,6 @@
 # Custom Input-Box Everywhere Extension
 
-A browser extension that allows users to type into a floating input box that is synced with original input box, instead of being restricted to fixed input fields on webpages. This enables users to write or generate CSS styles directly on any webpage. It supports two modes: Habit mode and Advanced mode. It provides better accessibility, typing comfort.
+A browser extension that allows users to type into a floating input box that is synced with original input box, instead of being restricted to fixed input fields on webpages. This enables users to write or generate CSS styles directly on any webpage. It supports two modes: Habit mode and Advanced mode. It also provides better accessibility, typing comfort.
 
 ## Features
 
